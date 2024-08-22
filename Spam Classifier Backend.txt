@@ -1,0 +1,35 @@
+import pandas as pd
+data= pd.read_csv("spamm.csv", encoding="latin-1")
+data.head(5)
+data.columns
+data.drop(['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], axis=1 , inplace=True)
+data.head()
+data['v1']=data['v1'].map({'ham':0, 'spam':1})
+data.head()
+from sklearn.feature_extraction.text import CountVectorizer
+cv=CountVectorizer()
+x=data['v2']
+y=data['v1']
+x.shape
+y.shape
+cv.fit(x)
+x=cv.fit_transform(x)
+x
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test=train_test_split(x, y, test_size=0.2)
+x_train.shape
+from sklearn.naive_bayes import MultinomialNB
+model=MultinomialNB()
+model.fit(x_train, y_train)
+result=result*100
+result
+import pickle
+pickle.dump(model, open("spamm.pkl","wb"))
+pickle.dump(cv, open("vectorizer.pkl","wb"))
+clf=pickle.load(open("spamm.pkl","rb"))
+clf
+msg="Free Time"
+data=[msg]
+vect=cv.transform(data).toarray()
+result=model.predict(vect)
+print(result)
